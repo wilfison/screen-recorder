@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Screen Recorder",
+  "description": "Grava a tela, captura o áudio e o microfone",
+  "version": "1.0",
+  "permissions": [
+    "desktopCapture",
+    "activeTab",
+    "storage",
+    "windows"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

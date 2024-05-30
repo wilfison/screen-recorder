@@ -1,0 +1,143 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --bg-color: #f0f0f0;
+  --fg-color: #ffffff;
+
+  --primary-color: #03a9f4;
+  --warning-color: #ff7043;
+  --danger-color: #f44336;
+
+  --primary-disabled-color: rgba(0, 0, 0, 0.1);
+  --primary-disabled-fg-color: rgba(0, 0, 0, 0.3);
+
+  --border-radius: 1rem;
+}
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #333;
+
+    --primary-disabled-color: #222;
+    --primary-disabled-fg-color: #555;
+  }
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: var(--bg-color);
+
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  width: 100%;
+
+  max-width: 800px;
+  max-height: 700px;
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--fg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.brand img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.video-container {
+  width: 100%;
+}
+
+video {
+  width: 100%;
+
+  min-height: 200px;
+  border: 1px solid var(--primary-disabled-color);
+  border-radius: var(--border-radius);
+}
+
+.controls {
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  border: 1px solid var(--primary-disabled-color);
+  background-color: var(--primary-color);
+  color: var(--fg-color);
+  transition: opacity 0.3s;
+}
+
+.btn:disabled {
+  background-color: var(--primary-disabled-color);
+  color: var(--primary-disabled-fg-color);
+}
+
+.btn:not(:disabled):hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.btn:first-child {
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+}
+
+.btn:last-child {
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.btn svg {
+  margin-right: 5px;
+}
+
+.stop:not(:disabled) {
+  background-color: var(--danger-color);
+}
