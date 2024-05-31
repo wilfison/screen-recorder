@@ -3,7 +3,7 @@ export default class ScreenRecorder {
   recordedChunks: Blob[]
   currentVideoUrl: string
   videoElement: HTMLVideoElement | undefined
-  onRecordReady: () => void
+  onRecordReady: (blob: Blob) => void
 
   constructor() {
     this.mediaRecorder = null
@@ -27,7 +27,7 @@ export default class ScreenRecorder {
 
     this._setVideoSrc(stream, 0);
 
-    this.mediaRecorder = new MediaRecorder(stream);
+    this.mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=h264' });
 
     this.mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -83,7 +83,7 @@ export default class ScreenRecorder {
   }
 
   async _onStopRecording() {
-    const blob = new Blob(this.recordedChunks, { type: "video/webm" });
+    const blob = new Blob(this.recordedChunks, { type: "video/webm;codecs=h264" });
 
     window.URL.revokeObjectURL(this.currentVideoUrl);
     this.currentVideoUrl = URL.createObjectURL(blob);
@@ -91,6 +91,6 @@ export default class ScreenRecorder {
     this._setVideoSrc(this.currentVideoUrl, 1);
     this.recordedChunks = [];
 
-    this.onRecordReady();
+    this.onRecordReady(blob);
   }
 }

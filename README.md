@@ -8,4 +8,4 @@
 - [ ] Record your webcam
 - [x] Record your microphone
 - [ ] Record your system audio
-- [ ] Export to MP4
+- [X] Export to MP4
