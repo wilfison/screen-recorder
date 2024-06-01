@@ -1,22 +1,15 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { fetchFile } from '@ffmpeg/util';
 
 export async function convertToMp4(blob: Blob, onProgress: (progress: number) => void) {
-  const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm";
   const ffmpeg = new FFmpeg();
 
   ffmpeg.on('progress', ({ progress }) => onProgress(progress * 100));
 
   await ffmpeg.load({
-    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-    wasmURL: await toBlobURL(
-      `${baseURL}/ffmpeg-core.wasm`,
-      "application/wasm"
-    ),
-    workerURL: await toBlobURL(
-      `${baseURL}/ffmpeg-core.worker.js`,
-      "text/javascript"
-    ),
+    coreURL: '/ffmpeg-core.js',
+    wasmURL: '/ffmpeg-core.wasm',
+    workerURL: '/ffmpeg-core.worker.js',
   });
 
   await ffmpeg.writeFile('recording.webm', await fetchFile(blob));

@@ -11,7 +11,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --bg-color: #f0f0f0;
-  --fg-color: #ffffff;
+  --fg-color: #333;
 
   --primary-color: #03a9f4;
   --warning-color: #ff7043;
@@ -29,6 +29,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #333;
+    --fg-color: #ffffff;
 
     --primary-disabled-color: #222;
     --primary-disabled-fg-color: #555;
@@ -119,6 +120,8 @@ video {
 }
 
 .btn {
+  --fg-color: #ffffff;
+
   flex: 1;
   display: flex;
   justify-content: center;

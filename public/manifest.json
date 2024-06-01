@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Screen Recorder",
-  "description": "Grava a tela, captura o áudio e o microfone",
+  "name": "ScreenRecorder",
+  "description": "A Simple Screen Recorder for Busy People",
   "version": "1.0",
   "permissions": [
     "desktopCapture",
@@ -23,5 +23,8 @@
     "16": "icon.png",
     "48": "icon.png",
     "128": "icon.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
   }
 }
