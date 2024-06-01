@@ -2,6 +2,10 @@
 
 ## A Simple Screen Recorder for Busy People
 
+A Chrome extension to record your screen, your microphone, and export to MP4.
+
+![screenshot](./screenshot.png)
+
 ### Features
 
 - [x] Record your screen
@@ -12,10 +16,11 @@
 
 ### How to Install
 
-1. Download the [last package](https://github.com/wilfison/screen-recorder/releases).
+1. Download the [last package](https://github.com/wilfison/screen-recorder/releases/latest).
 2. Go to the Extensions page by entering `chrome://extensions` in a new tab. Or, click the Extensions menu puzzle button and select Manage Extensions at the bottom of the menu.
-3. Enable `Developer Mode` by clicking the toggle switch next to Developer mode.
-4. Click the `Load unpacked` button and select the extension directory.
+3. Unpack the extension .zip file you downloaded.
+4. Enable `Developer Mode` by clicking the toggle switch next to Developer mode.
+5. Click the `Load unpacked` button and select the extension directory.
 
 ### How to Contribute
 
