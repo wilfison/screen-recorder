@@ -4,6 +4,10 @@
 
 A Chrome extension to record your screen, your microphone, and export to MP4.
 
+<a href="https://chromewebstore.google.com/detail/screenrecorder/pglbnbihdnchfipecbpfgckinckkoiol" target="_blank" nofollow rel="noopener">
+  <img src="https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/HRs9MPufa1J1h5glNhut.png" width="200" alt="Available in the Chrome Web Store">
+</a>
+
 ![screenshot](./screenshot.png)
 
 ### Features
