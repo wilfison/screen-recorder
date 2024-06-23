@@ -1,51 +1,48 @@
 import { useEffect, useRef, useState } from "react";
 
 import { convertToMp4 } from "./converter";
+import { STATUSES, INITIAL_STATE } from "./data";
 
-import ScreenRecorder from "./screen_recorder";
 import Button from "./components/button";
-
 import appIcon from "./assets/icon.svg";
-
-const STATUSES = {
-  inactive: "inactive",
-  recording: "recording",
-  paused: "paused",
-  processing: "processing",
-};
 
 function App() {
   const video = useRef<HTMLVideoElement>(null);
-  const [status, setStatus] = useState(STATUSES.inactive);
-  const [screenRecorder] = useState<ScreenRecorder>(new ScreenRecorder());
-  const [downloadReady, setDownloadReady] = useState(false);
-  const [processProgress, setProcessProgress] = useState(0);
-  const [processedVideoUrl, setProcessedVideoUrl] = useState<string | null>(
-    null
-  );
+  const [state, setState] = useState(INITIAL_STATE);
+
+  const updateState = (newState: Partial<AppState>) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
 
   const onStartRecording = async () => {
-    await screenRecorder.startRecordingAsync();
-    setStatus(STATUSES.recording);
+    await state.screenRecorder.startRecordingAsync();
+
+    updateState({ status: STATUSES.recording });
   };
 
   const onPauseResumeRecording = () => {
-    screenRecorder.pauseResumeRecording();
-    setStatus(
-      screenRecorder.mediaRecorder?.state === "recording"
-        ? STATUSES.recording
-        : STATUSES.paused
-    );
+    state.screenRecorder.pauseResumeRecording();
+    const mediaRecorderState = state.screenRecorder.mediaRecorder?.state;
+
+    updateState({
+      status:
+        mediaRecorderState === "recording"
+          ? STATUSES.recording
+          : STATUSES.paused,
+    });
   };
 
   const onStopRecording = () => {
-    screenRecorder.stopRecording();
-    setStatus(STATUSES.processing);
+    state.screenRecorder.stopRecording();
+
+    updateState({ status: STATUSES.processing });
   };
 
   const onDownload = (format: string) => {
     const videoUrl =
-      format === "webm" ? screenRecorder.currentVideoUrl : processedVideoUrl;
+      format === "webm"
+        ? state.screenRecorder.currentVideoUrl
+        : state.processedVideoUrl;
 
     if (!videoUrl) {
       return;
@@ -56,29 +53,36 @@ function App() {
     a.download = `recording.${format}`;
     a.click();
 
-    setStatus(STATUSES.inactive);
+    updateState({ status: STATUSES.inactive });
   };
 
   const onRecordReady = async (blob: Blob) => {
-    setProcessProgress(0);
-    setDownloadReady(true);
-    setStatus(STATUSES.processing);
-    setProcessedVideoUrl(null);
+    updateState({
+      processProgress: 0,
+      downloadReady: true,
+      status: STATUSES.processing,
+      processedVideoUrl: null,
+    });
 
-    URL.revokeObjectURL(String(processedVideoUrl));
-    const mp4Blob = await convertToMp4(blob, setProcessProgress);
+    URL.revokeObjectURL(String(state.processedVideoUrl));
+    const mp4Blob = await convertToMp4(blob, onProgress);
 
-    setProcessedVideoUrl(URL.createObjectURL(mp4Blob));
+    updateState({
+      processedVideoUrl: URL.createObjectURL(mp4Blob),
+      status: STATUSES.inactive,
+      processProgress: 100,
+    });
+  };
 
-    setStatus(STATUSES.inactive);
-    setProcessProgress(0);
+  const onProgress = (progress: number) => {
+    updateState({ processProgress: progress });
   };
 
   useEffect(() => {
-    screenRecorder.onRecordReady = onRecordReady;
+    state.screenRecorder.onRecordReady = onRecordReady;
 
     if (video.current) {
-      screenRecorder.videoElement = video.current;
+      state.screenRecorder.videoElement = video.current;
     }
   });
 
@@ -99,31 +103,31 @@ function App() {
             icon="download"
             text="Download .mp4"
             onClick={() => onDownload("mp4")}
-            disabled={!downloadReady || !processedVideoUrl}
+            disabled={!state.downloadReady || !state.processedVideoUrl}
           />
           <Button
             icon="download"
             text="Download .webm"
             onClick={() => onDownload("webm")}
-            disabled={!downloadReady}
+            disabled={!state.downloadReady}
           />
         </div>
 
         <div className="progress-container">
           <div
             className="progress-bar"
-            style={{ display: processProgress > 0 ? "block" : "none" }}
+            style={{ display: state.processProgress > 0 ? "block" : "none" }}
           >
             <div
               className="progress"
-              style={{ width: `${processProgress}%` }}
+              style={{ width: `${state.processProgress}%` }}
             ></div>
           </div>
           <div
             className="progress-description"
-            style={{ display: processProgress > 0 ? "block" : "none" }}
+            style={{ display: state.processProgress > 0 ? "block" : "none" }}
           >
-            Convertendo: {processProgress}%
+            Convertendo: {state.processProgress}%
           </div>
         </div>
       </div>
@@ -133,21 +137,25 @@ function App() {
           icon="record"
           text="Record"
           onClick={onStartRecording}
-          disabled={status !== STATUSES.inactive}
+          disabled={state.status !== STATUSES.inactive}
         />
 
         <Button
           icon="pause"
-          text={status === STATUSES.paused ? "Resume" : "Pause"}
+          text={state.status === STATUSES.paused ? "Resume" : "Pause"}
           onClick={onPauseResumeRecording}
-          disabled={![STATUSES.recording, STATUSES.paused].includes(status)}
+          disabled={
+            ![STATUSES.recording, STATUSES.paused].includes(state.status)
+          }
         />
 
         <Button
           icon="stop"
           text="Stop"
           onClick={onStopRecording}
-          disabled={[STATUSES.inactive, STATUSES.processing].includes(status)}
+          disabled={[STATUSES.inactive, STATUSES.processing].includes(
+            state.status
+          )}
         />
       </div>
     </>

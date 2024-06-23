@@ -1,16 +1,16 @@
-export default class ScreenRecorder {
-  mediaRecorder: MediaRecorder | null
-  recordedChunks: Blob[]
-  currentVideoUrl: string
-  videoElement: HTMLVideoElement | undefined
-  onRecordReady: (blob: Blob) => void
+export default class ScreenRecorder implements IScreenRecorder {
+  mediaRecorder: MediaRecorder | null;
+  recordedChunks: Blob[];
+  currentVideoUrl: string;
+  videoElement: HTMLVideoElement | undefined;
+  onRecordReady: (blob: Blob) => void;
 
   constructor() {
-    this.mediaRecorder = null
-    this.recordedChunks = []
-    this.currentVideoUrl = ""
-    this.videoElement = undefined
-    this.onRecordReady = () => { }
+    this.mediaRecorder = null;
+    this.recordedChunks = [];
+    this.currentVideoUrl = "";
+    this.videoElement = undefined;
+    this.onRecordReady = () => {};
   }
 
   async startRecordingAsync() {
@@ -22,12 +22,17 @@ export default class ScreenRecorder {
       audio: true,
     });
 
-    const tracks = [...videoStream.getTracks(), ...audioStream.getAudioTracks()];
+    const tracks = [
+      ...videoStream.getTracks(),
+      ...audioStream.getAudioTracks(),
+    ];
     const stream = new MediaStream(tracks);
 
     this._setVideoSrc(stream, 0);
 
-    this.mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=h264' });
+    this.mediaRecorder = new MediaRecorder(stream, {
+      mimeType: "video/webm;codecs=h264",
+    });
 
     this.mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -63,7 +68,7 @@ export default class ScreenRecorder {
     this.mediaRecorder.stream.getTracks().forEach((track) => track.stop());
   }
 
-  _setVideoSrc(src: MediaStream | string | null, volume: number) {
+  private _setVideoSrc(src: MediaStream | string | null, volume: number) {
     if (!this.videoElement) {
       return;
     }
@@ -82,8 +87,10 @@ export default class ScreenRecorder {
     this.videoElement.volume = volume;
   }
 
-  async _onStopRecording() {
-    const blob = new Blob(this.recordedChunks, { type: "video/webm;codecs=h264" });
+  private async _onStopRecording() {
+    const blob = new Blob(this.recordedChunks, {
+      type: "video/webm;codecs=h264",
+    });
 
     window.URL.revokeObjectURL(this.currentVideoUrl);
     this.currentVideoUrl = URL.createObjectURL(blob);
