@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { convertToMp4 } from "./converter";
 import { STATUSES, INITIAL_STATE } from "./data";
+import { tLocale } from "./locales";
 
 import Button from "./components/button";
 import appIcon from "./assets/icon.svg";
@@ -15,7 +16,7 @@ function App() {
   };
 
   const onStartRecording = async () => {
-    await state.screenRecorder.startRecordingAsync();
+    await state.screenRecorder.startRecordingAsync(state.includeAudio);
 
     updateState({ status: STATUSES.recording });
   };
@@ -78,6 +79,8 @@ function App() {
     updateState({ processProgress: progress });
   };
 
+  const t = (key: string) => tLocale(state.locale, key);
+
   useEffect(() => {
     state.screenRecorder.onRecordReady = onRecordReady;
 
@@ -101,13 +104,13 @@ function App() {
         <div className="row">
           <Button
             icon="download"
-            text="Download .mp4"
+            text={t("download_mp4")}
             onClick={() => onDownload("mp4")}
             disabled={!state.downloadReady || !state.processedVideoUrl}
           />
           <Button
             icon="download"
-            text="Download .webm"
+            text={t("download_webm")}
             onClick={() => onDownload("webm")}
             disabled={!state.downloadReady}
           />
@@ -120,7 +123,7 @@ function App() {
             checked={state.includeAudio}
             onChange={(e) => updateState({ includeAudio: e.target.checked })}
           />
-          <label htmlFor="include-audio">Include audio</label>
+          <label htmlFor="include-audio">{t("include_audio")}</label>
         </div>
 
         <div className="row progress-container">
@@ -137,7 +140,7 @@ function App() {
             className="progress-description"
             style={{ display: state.processProgress > 0 ? "block" : "none" }}
           >
-            Convertendo: {state.processProgress}%
+            {t("converting")}: {state.processProgress}%
           </div>
         </div>
       </div>
@@ -145,14 +148,14 @@ function App() {
       <div className="controls">
         <Button
           icon="record"
-          text="Record"
+          text={t("record")}
           onClick={onStartRecording}
           disabled={state.status !== STATUSES.inactive}
         />
 
         <Button
           icon="pause"
-          text={state.status === STATUSES.paused ? "Resume" : "Pause"}
+          text={state.status === STATUSES.paused ? t("record") : t("pause")}
           onClick={onPauseResumeRecording}
           disabled={
             ![STATUSES.recording, STATUSES.paused].includes(state.status)
@@ -161,7 +164,7 @@ function App() {
 
         <Button
           icon="stop"
-          text="Stop"
+          text={t("stop")}
           onClick={onStopRecording}
           disabled={[STATUSES.inactive, STATUSES.processing].includes(
             state.status

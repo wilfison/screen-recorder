@@ -14,6 +14,7 @@ export default class ScreenRecorder implements IScreenRecorder {
   }
 
   async startRecordingAsync(audio: boolean) {
+    console.log("startRecordingAsync", audio);
     const tracks = await this._getMediaTracks(audio);
     const stream = new MediaStream(tracks);
 

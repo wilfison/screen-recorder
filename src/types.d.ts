@@ -7,10 +7,15 @@ interface IScreenRecorder {
 }
 
 type AppState = {
+  locale: LocaleType;
   status: string;
   screenRecorder: ScreenRecorder;
   downloadReady: boolean;
   processProgress: number;
   processedVideoUrl: string | null;
   includeAudio: boolean;
+};
+
+type LocaleType = {
+  [key: string]: string;
 };

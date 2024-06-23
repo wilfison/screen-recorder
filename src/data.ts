@@ -1,4 +1,5 @@
 import ScreenRecorder from "./screen_recorder";
+import { getLocale } from "./locales";
 
 export const STATUSES = {
   inactive: "inactive",
@@ -8,6 +9,7 @@ export const STATUSES = {
 };
 
 export const INITIAL_STATE: AppState = {
+  locale: getLocale(),
   status: STATUSES.inactive,
   screenRecorder: new ScreenRecorder(),
   downloadReady: false,
