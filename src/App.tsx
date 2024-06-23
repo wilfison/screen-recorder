@@ -126,7 +126,7 @@ function App() {
           <label htmlFor="include-audio">{t("include_audio")}</label>
         </div>
 
-        <div className="row progress-container">
+        <div className="progress-container">
           <div
             className="progress-bar"
             style={{ display: state.processProgress > 0 ? "block" : "none" }}
@@ -140,7 +140,9 @@ function App() {
             className="progress-description"
             style={{ display: state.processProgress > 0 ? "block" : "none" }}
           >
-            {t("converting")}: {state.processProgress}%
+            <small>
+              {t("converting")}: {state.processProgress}%
+            </small>
           </div>
         </div>
       </div>
