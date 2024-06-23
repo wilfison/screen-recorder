@@ -18,7 +18,7 @@ function App() {
   const onStartRecording = async () => {
     await state.screenRecorder.startRecordingAsync(state.includeAudio);
 
-    updateState({ status: STATUSES.recording });
+    updateState({ status: STATUSES.recording, processProgress: 0 });
   };
 
   const onPauseResumeRecording = () => {
