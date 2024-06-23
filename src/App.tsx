@@ -89,12 +89,12 @@ function App() {
   return (
     <>
       <div className="main-container">
-        <div className="brand">
+        <div className="row brand">
           <img src={appIcon} alt="icon" />
           <h1>ScreenRecorder</h1>
         </div>
 
-        <div className="video-container">
+        <div className="row video-container">
           <video ref={video} autoPlay playsInline controls></video>
         </div>
 
@@ -113,7 +113,17 @@ function App() {
           />
         </div>
 
-        <div className="progress-container">
+        <div className="row">
+          <input
+            type="checkbox"
+            id="include-audio"
+            checked={state.includeAudio}
+            onChange={(e) => updateState({ includeAudio: e.target.checked })}
+          />
+          <label htmlFor="include-audio">Include audio</label>
+        </div>
+
+        <div className="row progress-container">
           <div
             className="progress-bar"
             style={{ display: state.processProgress > 0 ? "block" : "none" }}

@@ -1,7 +1,7 @@
 interface IScreenRecorder {
   onRecordReady: (blob: Blob) => void;
   videoElement: HTMLVideoElement | undefined;
-  startRecordingAsync: () => Promise<void>;
+  startRecordingAsync: (audio: boolean) => Promise<void>;
   pauseResumeRecording: () => void;
   stopRecording: () => void;
 }
@@ -12,4 +12,5 @@ type AppState = {
   downloadReady: boolean;
   processProgress: number;
   processedVideoUrl: string | null;
+  includeAudio: boolean;
 };
