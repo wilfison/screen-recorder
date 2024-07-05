@@ -1,10 +1,16 @@
 interface IScreenRecorder {
   onRecordReady: (blob: Blob) => void;
   videoElement: HTMLVideoElement | undefined;
-  startRecordingAsync: (audio: boolean) => Promise<void>;
+  startRecordingAsync: (audio: boolean, audioInputId: string) => Promise<void>;
   pauseResumeRecording: () => void;
   stopRecording: () => void;
+  getAudioInputs: () => Promise<deviceType[]>;
 }
+
+type deviceType = {
+  label: string;
+  value: string;
+};
 
 type AppState = {
   locale: LocaleType;
@@ -14,6 +20,8 @@ type AppState = {
   processProgress: number;
   processedVideoUrl: string | null;
   includeAudio: boolean;
+  audioInputs: deviceType[];
+  audioInputId: string;
 };
 
 type LocaleType = {

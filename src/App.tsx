@@ -6,6 +6,8 @@ import { tLocale } from "./locales";
 
 import Button from "./components/button";
 import appIcon from "./assets/icon.svg";
+import Control from "./components/control";
+import icons from "./components/icons";
 
 function App() {
   const video = useRef<HTMLVideoElement>(null);
@@ -15,8 +17,23 @@ function App() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
 
+  const startApp = async () => {
+    state.screenRecorder.onRecordReady = onRecordReady;
+
+    if (video.current) {
+      state.screenRecorder.videoElement = video.current;
+    }
+
+    const audioInputs = await state.screenRecorder.getAudioInputs();
+
+    updateState({ audioInputs });
+  };
+
   const onStartRecording = async () => {
-    await state.screenRecorder.startRecordingAsync(state.includeAudio);
+    await state.screenRecorder.startRecordingAsync(
+      state.includeAudio,
+      state.audioInputId
+    );
 
     updateState({ status: STATUSES.recording, processProgress: 0 });
   };
@@ -82,98 +99,71 @@ function App() {
   const t = (key: string) => tLocale(state.locale, key);
 
   useEffect(() => {
-    state.screenRecorder.onRecordReady = onRecordReady;
-
-    if (video.current) {
-      state.screenRecorder.videoElement = video.current;
-    }
+    startApp();
   });
 
   return (
-    <>
-      <div className="main-container">
-        <div className="row brand">
-          <img src={appIcon} alt="icon" />
-          <h1>ScreenRecorder</h1>
-        </div>
+    <div className="app">
+      <div className="brand">
+        <img src={appIcon} alt="icon" />
+        <h1 className="brand-name">ScreenRecorder</h1>
+      </div>
 
-        <div className="row video-container">
+      <div className="row main-content">
+        <div className="video-container">
           <video ref={video} autoPlay playsInline controls></video>
         </div>
 
-        <div className="row">
+        <div className="devices">
+          <Control
+            label={t("include_audio")}
+            icon={state.includeAudio ? icons.microphone : icons.microphoneSlash}
+            active={state.includeAudio}
+            onChangeCheck={(checked) => updateState({ includeAudio: checked })}
+            onSelectionChange={(value) => updateState({ audioInputId: value })}
+            selectionList={state.audioInputs}
+          />
+        </div>
+
+        <div className="actions">
+          <Button
+            icon="pause"
+            title={state.status === STATUSES.paused ? t("record") : t("pause")}
+            onClick={onPauseResumeRecording}
+            disabled={
+              ![STATUSES.recording, STATUSES.paused].includes(state.status)
+            }
+          />
+
+          <Button
+            icon="record"
+            title={t("record")}
+            onClick={onStartRecording}
+            disabled={state.status !== STATUSES.inactive}
+          />
+
+          <Button
+            icon="stop"
+            title={t("stop")}
+            onClick={onStopRecording}
+            disabled={[STATUSES.inactive, STATUSES.processing].includes(
+              state.status
+            )}
+          />
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="download-container">
           <Button
             icon="download"
-            text={t("download_mp4")}
+            title={t("download_mp4")}
             onClick={() => onDownload("mp4")}
             disabled={!state.downloadReady || !state.processedVideoUrl}
           />
-          <Button
-            icon="download"
-            text={t("download_webm")}
-            onClick={() => onDownload("webm")}
-            disabled={!state.downloadReady}
-          />
-        </div>
-
-        <div className="row">
-          <input
-            type="checkbox"
-            id="include-audio"
-            checked={state.includeAudio}
-            onChange={(e) => updateState({ includeAudio: e.target.checked })}
-          />
-          <label htmlFor="include-audio">{t("include_audio")}</label>
-        </div>
-
-        <div className="progress-container">
-          <div
-            className="progress-bar"
-            style={{ display: state.processProgress > 0 ? "block" : "none" }}
-          >
-            <div
-              className="progress"
-              style={{ width: `${state.processProgress}%` }}
-            ></div>
-          </div>
-          <div
-            className="progress-description"
-            style={{ display: state.processProgress > 0 ? "block" : "none" }}
-          >
-            <small>
-              {t("converting")}: {state.processProgress}%
-            </small>
-          </div>
         </div>
       </div>
-
-      <div className="controls">
-        <Button
-          icon="record"
-          text={t("record")}
-          onClick={onStartRecording}
-          disabled={state.status !== STATUSES.inactive}
-        />
-
-        <Button
-          icon="pause"
-          text={state.status === STATUSES.paused ? t("record") : t("pause")}
-          onClick={onPauseResumeRecording}
-          disabled={
-            ![STATUSES.recording, STATUSES.paused].includes(state.status)
-          }
-        />
-
-        <Button
-          icon="stop"
-          text={t("stop")}
-          onClick={onStopRecording}
-          disabled={[STATUSES.inactive, STATUSES.processing].includes(
-            state.status
-          )}
-        />
-      </div>
-    </>
+    </div>
   );
 }
 

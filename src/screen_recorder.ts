@@ -13,8 +13,8 @@ export default class ScreenRecorder implements IScreenRecorder {
     this.onRecordReady = () => {};
   }
 
-  async startRecordingAsync(audio: boolean) {
-    const tracks = await this._getMediaTracks(audio);
+  async startRecordingAsync(audio: boolean, audioInputId: string) {
+    const tracks = await this._getMediaTracks(audio, audioInputId);
     const stream = new MediaStream(tracks);
 
     this._setVideoSrc(stream, 0);
@@ -57,7 +57,15 @@ export default class ScreenRecorder implements IScreenRecorder {
     this.mediaRecorder.stream.getTracks().forEach((track) => track.stop());
   }
 
-  private async _getMediaTracks(audio: boolean) {
+  async getAudioInputs(): Promise<deviceType[]> {
+    return navigator.mediaDevices.enumerateDevices().then((devices) => {
+      return devices
+        .filter((device) => device.kind === "audioinput")
+        .map((device) => ({ label: device.label, value: device.deviceId }));
+    });
+  }
+
+  private async _getMediaTracks(audio: boolean, audioInputId: string) {
     let tracks = [];
 
     const videoStream = await navigator.mediaDevices.getDisplayMedia({
@@ -68,7 +76,9 @@ export default class ScreenRecorder implements IScreenRecorder {
 
     if (audio) {
       const audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
+        audio: {
+          deviceId: audioInputId ? { exact: audioInputId } : undefined,
+        },
       });
 
       tracks = [...tracks, ...audioStream.getAudioTracks()];
