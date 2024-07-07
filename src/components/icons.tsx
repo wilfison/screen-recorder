@@ -1,11 +1,28 @@
-const icons = {
-  download:
-    "M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z",
-  record:
-    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm0-160a72,72,0,1,0,72,72A72.08,72.08,0,0,0,128,56Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,128,184Z",
-  pause:
-    "M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z",
-  stop: "M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,160H56V56H200V200Z",
+import {
+  Icon,
+  Download,
+  Pause,
+  Record,
+  Stop,
+  Microphone,
+  MicrophoneSlash,
+  Webcam,
+  WebcamSlash,
+} from "@phosphor-icons/react";
+
+type IconType = {
+  [key: string]: Icon;
+};
+
+const icons: IconType = {
+  download: Download,
+  record: Record,
+  pause: Pause,
+  stop: Stop,
+  microphone: Microphone,
+  microphoneSlash: MicrophoneSlash,
+  webcam: Webcam,
+  webcamSlash: WebcamSlash,
 };
 
 export default icons;

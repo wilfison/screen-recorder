@@ -13,9 +13,8 @@ A Chrome extension to record your screen, your microphone, and export to MP4.
 ### Features
 
 - [x] Record your screen
-- [ ] Record your webcam
+- [x] Record your webcam
 - [x] Record your microphone
-- [ ] Record your system audio
 - [X] Export to MP4
 
 ### How to Install
