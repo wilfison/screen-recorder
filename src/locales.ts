@@ -10,6 +10,11 @@ const locales: { [key: string]: { [key: string]: string } } = {
     pause: "Pause",
     stop: "Stop",
     integrated_camera: "Integrated Camera",
+    camera_location: "Camera Location",
+    top_left: "Top Left",
+    top_right: "Top Right",
+    bottom_left: "Bottom Left",
+    bottom_right: "Bottom Right",
   },
   es: {
     language: "es",
@@ -22,6 +27,11 @@ const locales: { [key: string]: { [key: string]: string } } = {
     pause: "Pausa",
     stop: "Detener",
     integrated_camera: "Cámara integrada",
+    camera_location: "Ubicación de la cámara",
+    top_left: "Arriba a la izquierda",
+    top_right: "Arriba a la derecha",
+    bottom_left: "Abajo a la izquierda",
+    bottom_right: "Abajo a la derecha",
   },
   pt: {
     language: "pt",
@@ -34,6 +44,11 @@ const locales: { [key: string]: { [key: string]: string } } = {
     pause: "Pausar",
     stop: "Parar",
     integrated_camera: "Câmera integrada",
+    camera_location: "Localização da câmera",
+    top_left: "Superior esquerdo",
+    top_right: "Superior direito",
+    bottom_left: "Inferior esquerdo",
+    bottom_right: "Inferior direito",
   },
 };
 

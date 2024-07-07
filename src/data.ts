@@ -21,4 +21,5 @@ export const INITIAL_STATE: AppState = {
   videoInputs: [],
   audioInputId: "default",
   videoInputId: "",
+  cameraLocation: "top_left",
 };

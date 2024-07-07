@@ -29,10 +29,12 @@ export default function Control(props: Props) {
       <button
         className="device-indicator"
         onClick={handleCheck}
-        disabled={props.disabled}
+        disabled={props.disabled || !props.onChangeCheck}
       >
         <props.icon size={16} className="icon" />
-        <span className={`indicator ${indicatorClass}`}></span>
+        {props.onChangeCheck && (
+          <span className={`indicator ${indicatorClass}`}></span>
+        )}
       </button>
 
       <div className="device-selector">

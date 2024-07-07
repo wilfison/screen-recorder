@@ -4,17 +4,21 @@ export default class ScreenRecorder implements IScreenRecorder {
   currentVideoUrl: string;
   audioInputId: string;
   videoInputId: string;
+  cameraLocationName: string;
   videoElement: HTMLVideoElement | undefined;
   onRecordReady: (blob: Blob) => void;
 
   private _screenVideo: HTMLVideoElement;
-  private _webcamVideo: HTMLVideoElement;
+  private _cameraVideo: HTMLVideoElement;
   private _canvas: HTMLCanvasElement;
   private _canvasContext: CanvasRenderingContext2D | null;
   private _screenTrack: MediaStreamTrack | null;
+  private _cameraLocation: { x: number; y: number };
 
-  WEBCAM_WIDTH = 300;
-  WEBCAM_HEIGHT = 225;
+  CAMERA_WIDTH = 300;
+  CAMERA_HEIGHT = 225;
+  CAMERA_PADDING = 50;
+  CAMERA_LOCATIONS = ["top_left", "top_right", "bottom_left", "bottom_right"];
 
   constructor() {
     this.mediaRecorder = null;
@@ -22,14 +26,16 @@ export default class ScreenRecorder implements IScreenRecorder {
     this.currentVideoUrl = "";
     this.audioInputId = "default";
     this.videoInputId = "";
+    this.cameraLocationName = this.CAMERA_LOCATIONS[0];
     this.videoElement = undefined;
     this.onRecordReady = () => {};
 
     this._screenVideo = document.createElement("video");
-    this._webcamVideo = document.createElement("video");
+    this._cameraVideo = document.createElement("video");
     this._canvas = document.createElement("canvas");
     this._canvasContext = this._canvas.getContext("2d");
     this._screenTrack = null;
+    this._cameraLocation = { x: 0, y: 0 };
   }
 
   async startRecordingAsync(audio: boolean, video: boolean) {
@@ -92,24 +98,61 @@ export default class ScreenRecorder implements IScreenRecorder {
     });
   }
 
+  setWebcamLocation() {
+    if (!this.CAMERA_LOCATIONS.includes(this.cameraLocationName)) {
+      return;
+    }
+
+    switch (this.cameraLocationName) {
+      case "top_left":
+        this._cameraLocation = {
+          x: this.CAMERA_PADDING,
+          y: this.CAMERA_PADDING,
+        };
+        break;
+      case "top_right":
+        this._cameraLocation = {
+          x: this._canvas.width - this.CAMERA_WIDTH - this.CAMERA_PADDING,
+          y: this.CAMERA_PADDING,
+        };
+        break;
+      case "bottom_left":
+        this._cameraLocation = {
+          x: this.CAMERA_PADDING,
+          y: this._canvas.height - this.CAMERA_HEIGHT - this.CAMERA_PADDING,
+        };
+        break;
+      case "bottom_right":
+        this._cameraLocation = {
+          x: this._canvas.width - this.CAMERA_WIDTH - this.CAMERA_PADDING,
+          y: this._canvas.height - this.CAMERA_HEIGHT - this.CAMERA_PADDING,
+        };
+        break;
+    }
+  }
+
   private async _getMediaTracks(audio: boolean, video: boolean) {
     const screenConfig: MediaStreamConstraints = { video: true };
-    const webcamConfig: MediaStreamConstraints = { audio, video };
+    const cameraConfig: MediaStreamConstraints = { audio, video };
+    let cameraStream = null;
+    let cameraAudioTracks: MediaStreamTrack[] = [];
 
     if (audio && !!this.audioInputId) {
-      webcamConfig.audio = { deviceId: { exact: this.audioInputId } };
+      cameraConfig.audio = { deviceId: { exact: this.audioInputId } };
     }
 
     if (video && !!this.videoInputId) {
-      webcamConfig.video = { deviceId: { exact: this.videoInputId } };
+      cameraConfig.video = { deviceId: { exact: this.videoInputId } };
     }
 
-    const webcamStream = await navigator.mediaDevices.getUserMedia(
-      webcamConfig
-    );
     const screenStream = await navigator.mediaDevices.getDisplayMedia(
       screenConfig
     );
+
+    if (audio || video) {
+      cameraStream = await navigator.mediaDevices.getUserMedia(cameraConfig);
+      cameraAudioTracks = cameraStream.getAudioTracks();
+    }
 
     // Stop recording when screen sharing ends
     this._screenTrack = screenStream.getVideoTracks()[0];
@@ -122,13 +165,15 @@ export default class ScreenRecorder implements IScreenRecorder {
     this._screenVideo.srcObject = screenStream;
     this._screenVideo.play();
 
-    this._webcamVideo.srcObject = webcamStream;
-    this._webcamVideo.muted = true;
-    this._webcamVideo.play();
+    this._cameraVideo.srcObject = cameraStream;
+    this._cameraVideo.muted = true;
+    this._cameraVideo.play();
 
     this._screenVideo.onloadedmetadata = () => {
       this._canvas.width = this._screenVideo.videoWidth;
       this._canvas.height = this._screenVideo.videoHeight;
+
+      this.setWebcamLocation();
     };
 
     this._canvasContext = this._canvas.getContext("2d");
@@ -136,7 +181,7 @@ export default class ScreenRecorder implements IScreenRecorder {
     this._drawFrame();
     const canvasStream = this._canvas.captureStream(30);
 
-    return [...canvasStream.getVideoTracks(), ...webcamStream.getAudioTracks()];
+    return [...canvasStream.getVideoTracks(), ...cameraAudioTracks];
   }
 
   private _setVideoSrc(src: MediaStream | string | null, volume: number) {
@@ -170,7 +215,7 @@ export default class ScreenRecorder implements IScreenRecorder {
     this.recordedChunks = [];
 
     this._screenVideo.srcObject = null;
-    this._webcamVideo.srcObject = null;
+    this._cameraVideo.srcObject = null;
 
     if (this._screenTrack?.readyState === "live") {
       this._screenTrack.stop();
@@ -189,11 +234,11 @@ export default class ScreenRecorder implements IScreenRecorder {
     );
 
     this._canvasContext?.drawImage(
-      this._webcamVideo,
-      this._canvas.width - this.WEBCAM_WIDTH - 50,
-      this._canvas.height - this.WEBCAM_HEIGHT - 50,
-      this.WEBCAM_WIDTH,
-      this.WEBCAM_HEIGHT
+      this._cameraVideo,
+      this._cameraLocation.x,
+      this._cameraLocation.y,
+      this.CAMERA_WIDTH,
+      this.CAMERA_HEIGHT
     );
 
     requestAnimationFrame(this._drawFrame.bind(this));

@@ -13,6 +13,13 @@ function App() {
   const video = useRef<HTMLVideoElement>(null);
   const [state, setState] = useState(INITIAL_STATE);
 
+  const cameraLocations = state.screenRecorder.CAMERA_LOCATIONS.map(
+    (location: string) => ({
+      label: tLocale(state.locale, location),
+      value: location,
+    })
+  );
+
   const updateState = (newState: Partial<AppState>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
@@ -25,6 +32,13 @@ function App() {
       updateState({ videoInputId: deviceId });
       state.screenRecorder.videoInputId = deviceId;
     }
+  };
+
+  const updateCameraLocation = (location: string) => {
+    updateState({ cameraLocation: location });
+
+    state.screenRecorder.cameraLocationName = location;
+    state.screenRecorder.setWebcamLocation();
   };
 
   const startApp = async () => {
@@ -149,6 +163,15 @@ function App() {
             onChangeCheck={(checked) => updateState({ includeCamera: checked })}
             onSelectionChange={(value) => updateInputDevice("video", value)}
             selectionList={state.videoInputs}
+          />
+
+          <Control
+            label={t("camera_location")}
+            icon={state.cameraLocation ? icons.webcam : icons.webcamSlash}
+            active={state.includeCamera}
+            disabled={state.status == STATUSES.processing}
+            onSelectionChange={(value) => updateCameraLocation(value)}
+            selectionList={cameraLocations}
           />
         </div>
 

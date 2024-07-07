@@ -26,6 +26,7 @@ type AppState = {
   videoInputs: deviceType[];
   audioInputId: string;
   videoInputId: string;
+  cameraLocation: string;
 };
 
 type LocaleType = {
