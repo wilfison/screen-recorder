@@ -121,6 +121,14 @@ main {
   border-color: transparent;
 }
 
+.device .device-indicator:disabled {
+  opacity: 0.5;
+}
+
+.device .device-indicator:disabled .indicator {
+  background-color: var(--fg-color);
+}
+
 .device-indicator .indicator {
   position: absolute;
   bottom: 0;

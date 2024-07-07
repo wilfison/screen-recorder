@@ -11,6 +11,10 @@ export default class ScreenRecorder implements IScreenRecorder {
   private _webcamVideo: HTMLVideoElement;
   private _canvas: HTMLCanvasElement;
   private _canvasContext: CanvasRenderingContext2D | null;
+  private _screenTrack: MediaStreamTrack | null;
+
+  WEBCAM_WIDTH = 300;
+  WEBCAM_HEIGHT = 225;
 
   constructor() {
     this.mediaRecorder = null;
@@ -25,6 +29,7 @@ export default class ScreenRecorder implements IScreenRecorder {
     this._webcamVideo = document.createElement("video");
     this._canvas = document.createElement("canvas");
     this._canvasContext = this._canvas.getContext("2d");
+    this._screenTrack = null;
   }
 
   async startRecordingAsync(audio: boolean, video: boolean) {
@@ -107,11 +112,12 @@ export default class ScreenRecorder implements IScreenRecorder {
     );
 
     // Stop recording when screen sharing ends
-    screenStream.getVideoTracks().forEach((track) => {
-      track.onended = () => {
-        this.stopRecording();
-      };
-    });
+    this._screenTrack = screenStream.getVideoTracks()[0];
+    this._screenTrack.onended = () => {
+      if (this.mediaRecorder?.state === "recording") {
+        this.mediaRecorder.stop();
+      }
+    };
 
     this._screenVideo.srcObject = screenStream;
     this._screenVideo.play();
@@ -166,6 +172,10 @@ export default class ScreenRecorder implements IScreenRecorder {
     this._screenVideo.srcObject = null;
     this._webcamVideo.srcObject = null;
 
+    if (this._screenTrack?.readyState === "live") {
+      this._screenTrack.stop();
+    }
+
     this.onRecordReady(blob);
   }
 
@@ -178,13 +188,12 @@ export default class ScreenRecorder implements IScreenRecorder {
       this._canvas.height
     );
 
-    // Draw webcam video in the bottom right corner
     this._canvasContext?.drawImage(
       this._webcamVideo,
-      this._canvas.width - 200,
-      this._canvas.height - 150,
-      200,
-      150
+      this._canvas.width - this.WEBCAM_WIDTH - 50,
+      this._canvas.height - this.WEBCAM_HEIGHT - 50,
+      this.WEBCAM_WIDTH,
+      this.WEBCAM_HEIGHT
     );
 
     requestAnimationFrame(this._drawFrame.bind(this));

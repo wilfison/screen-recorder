@@ -67,7 +67,7 @@ function App() {
   };
 
   const onStopRecording = () => {
-    state.screenRecorder.mediaRecorder.stop();
+    state.screenRecorder.stopRecording();
 
     updateState({ status: STATUSES.processing });
   };
@@ -135,6 +135,7 @@ function App() {
             label={t("microphone")}
             icon={state.includeAudio ? icons.microphone : icons.microphoneSlash}
             active={state.includeAudio}
+            disabled={state.status != STATUSES.inactive}
             onChangeCheck={(checked) => updateState({ includeAudio: checked })}
             onSelectionChange={(value) => updateInputDevice("audio", value)}
             selectionList={state.audioInputs}
@@ -144,6 +145,7 @@ function App() {
             label={t("camera")}
             icon={state.includeCamera ? icons.webcam : icons.webcamSlash}
             active={state.includeCamera}
+            disabled={state.status != STATUSES.inactive}
             onChangeCheck={(checked) => updateState({ includeCamera: checked })}
             onSelectionChange={(value) => updateInputDevice("video", value)}
             selectionList={state.videoInputs}

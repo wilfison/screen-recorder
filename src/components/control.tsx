@@ -9,6 +9,7 @@ type Props = {
   label: string;
   icon: Icon;
   active: boolean;
+  disabled?: boolean;
   selectionList: SelectionListType[];
   onChangeCheck?: (checked: boolean) => void;
   onSelectionChange?: (value: string) => void;
@@ -25,14 +26,21 @@ export default function Control(props: Props) {
 
   return (
     <div className="row device">
-      <button className="device-indicator" onClick={handleCheck}>
+      <button
+        className="device-indicator"
+        onClick={handleCheck}
+        disabled={props.disabled}
+      >
         <props.icon size={16} className="icon" />
         <span className={`indicator ${indicatorClass}`}></span>
       </button>
 
       <div className="device-selector">
         <label className={props.active ? "" : "disabled"}>{props.label}</label>
-        <select disabled={!props.active} onChange={handleSelectionChange}>
+        <select
+          disabled={props.disabled || !props.active}
+          onChange={handleSelectionChange}
+        >
           {props.selectionList.map((item) => (
             <option key={item.value} value={item.value}>
               {item.label}
