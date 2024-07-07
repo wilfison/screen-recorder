@@ -205,7 +205,7 @@ function App() {
 
         <div className="download-container">
           <DownloadButton
-            title={t("download_mp4")}
+            title={t("download_file")}
             progress={state.processProgress}
             onClick={() => onDownload("mp4")}
             disabled={!state.downloadReady || !state.processedVideoUrl}

@@ -1,11 +1,9 @@
 const locales: { [key: string]: { [key: string]: string } } = {
   en: {
     language: "en",
-    download_mp4: "Download .mp4",
-    download_webm: "Download .wbm",
+    download_file: "Download File",
     microphone: "Microphone",
     camera: "Camera",
-    converting: "Converting",
     record: "Record",
     pause: "Pause",
     stop: "Stop",
@@ -18,11 +16,9 @@ const locales: { [key: string]: { [key: string]: string } } = {
   },
   es: {
     language: "es",
-    download_mp4: "Descargar .mp4",
-    download_webm: "Descargar .wbm",
+    download_file: "Descargar archivo",
     microphone: "Micrófono",
     camera: "Cámara",
-    converting: "Convirtiendo",
     record: "Grabar",
     pause: "Pausa",
     stop: "Detener",
@@ -35,11 +31,9 @@ const locales: { [key: string]: { [key: string]: string } } = {
   },
   pt: {
     language: "pt",
-    download_mp4: "Baixar .mp4",
-    download_webm: "Baixar .wbm",
+    download_file: "Baixar arquivo",
     microphone: "Microfone",
     camera: "Câmera",
-    converting: "Convertendo",
     record: "Gravar",
     pause: "Pausar",
     stop: "Parar",
