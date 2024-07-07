@@ -21,7 +21,7 @@
   --bg-error: #ed333b;
 
   /* functional */
-  --border-radius: 0.8rem;
+  --border-radius: 0.5rem;
 }
 
 /* dark mode */
@@ -42,10 +42,10 @@ body {
 }
 
 main {
-  max-width: 1000px;
+  max-width: 500px;
   min-width: 500px;
   min-height: 403px;
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 
 .app {
@@ -82,17 +82,16 @@ main {
 }
 
 .video-container {
-  --min-width: 400px;
-
   position: relative;
   width: 100%;
-  min-width: var(--min-width);
-  padding-bottom: 30.25%;
+  padding-bottom: 56.25%; /* 16:9 ratio */
   height: 0;
   overflow: hidden;
 
   background-color: black;
   border-radius: var(--border-radius);
+
+  margin-bottom: 1rem;
 }
 
 .video-container video {
@@ -116,7 +115,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.7rem;
+  padding: 0.6rem;
   background-color: var(--bg-btn);
   border-radius: var(--border-radius);
   border-color: transparent;
@@ -142,6 +141,10 @@ main {
   fill: var(--fg-color);
 }
 
+.device-selector {
+  width: 100%;
+}
+
 .device-selector label,
 .device-selector select {
   font-size: small;
@@ -157,15 +160,17 @@ main {
 .device-selector select {
   border-color: var(--bg-btn);
   background-color: var(--bg-color);
-  padding: 0.2rem;
+  padding: 0.4rem 0.2rem;
+  border-radius: var(--border-radius);
 }
 
 .actions {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
   min-width: 100px;
+  padding: 1rem;
 }
 
 .action-btn {
@@ -191,25 +196,4 @@ main {
   width: 1.5rem;
   height: 1.5rem;
   fill: white;
-}
-
-/* responsive */
-@media (max-width: 768px) {
-  .main-content,
-  .device {
-    flex-direction: column;
-  }
-
-  .actions {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .devices {
-    flex-direction: row;
-  }
-
-  .device {
-    align-items: center;
-  }
 }

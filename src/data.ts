@@ -16,6 +16,9 @@ export const INITIAL_STATE: AppState = {
   processProgress: 0,
   processedVideoUrl: null,
   includeAudio: true,
+  includeCamera: false,
   audioInputs: [],
+  videoInputs: [],
   audioInputId: "default",
+  videoInputId: "",
 };

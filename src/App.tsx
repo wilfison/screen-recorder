@@ -17,6 +17,16 @@ function App() {
     setState((prevState) => ({ ...prevState, ...newState }));
   };
 
+  const updateInputDevice = (type: string, deviceId: string) => {
+    if (type === "audio") {
+      updateState({ audioInputId: deviceId });
+      state.screenRecorder.audioInputId = deviceId;
+    } else {
+      updateState({ videoInputId: deviceId });
+      state.screenRecorder.videoInputId = deviceId;
+    }
+  };
+
   const startApp = async () => {
     state.screenRecorder.onRecordReady = onRecordReady;
 
@@ -25,14 +35,20 @@ function App() {
     }
 
     const audioInputs = await state.screenRecorder.getAudioInputs();
+    let videoInputs = await state.screenRecorder.getVideoInputs();
 
-    updateState({ audioInputs });
+    videoInputs = videoInputs.map((input: deviceType) => ({
+      label: input.label || t("integrated_camera"),
+      value: input.value,
+    }));
+
+    updateState({ audioInputs, videoInputs });
   };
 
   const onStartRecording = async () => {
     await state.screenRecorder.startRecordingAsync(
       state.includeAudio,
-      state.audioInputId
+      state.includeCamera
     );
 
     updateState({ status: STATUSES.recording, processProgress: 0 });
@@ -51,7 +67,7 @@ function App() {
   };
 
   const onStopRecording = () => {
-    state.screenRecorder.stopRecording();
+    state.screenRecorder.mediaRecorder.stop();
 
     updateState({ status: STATUSES.processing });
   };
@@ -109,19 +125,28 @@ function App() {
         <h1 className="brand-name">ScreenRecorder</h1>
       </div>
 
-      <div className="row main-content">
+      <div className="main-content">
         <div className="video-container">
           <video ref={video} autoPlay playsInline controls></video>
         </div>
 
         <div className="devices">
           <Control
-            label={t("include_audio")}
+            label={t("microphone")}
             icon={state.includeAudio ? icons.microphone : icons.microphoneSlash}
             active={state.includeAudio}
             onChangeCheck={(checked) => updateState({ includeAudio: checked })}
-            onSelectionChange={(value) => updateState({ audioInputId: value })}
+            onSelectionChange={(value) => updateInputDevice("audio", value)}
             selectionList={state.audioInputs}
+          />
+
+          <Control
+            label={t("camera")}
+            icon={state.includeCamera ? icons.webcam : icons.webcamSlash}
+            active={state.includeCamera}
+            onChangeCheck={(checked) => updateState({ includeCamera: checked })}
+            onSelectionChange={(value) => updateInputDevice("video", value)}
+            selectionList={state.videoInputs}
           />
         </div>
 

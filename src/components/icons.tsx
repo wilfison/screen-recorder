@@ -6,6 +6,8 @@ import {
   Stop,
   Microphone,
   MicrophoneSlash,
+  Webcam,
+  WebcamSlash,
 } from "@phosphor-icons/react";
 
 type IconType = {
@@ -19,6 +21,8 @@ const icons: IconType = {
   stop: Stop,
   microphone: Microphone,
   microphoneSlash: MicrophoneSlash,
+  webcam: Webcam,
+  webcamSlash: WebcamSlash,
 };
 
 export default icons;
