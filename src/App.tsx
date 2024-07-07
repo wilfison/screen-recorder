@@ -8,6 +8,7 @@ import Button from "./components/button";
 import appIcon from "./assets/icon.svg";
 import Control from "./components/control";
 import icons from "./components/icons";
+import DownloadButton from "./components/download_button";
 
 function App() {
   const video = useRef<HTMLVideoElement>(null);
@@ -175,7 +176,7 @@ function App() {
           />
         </div>
 
-        <div className="actions">
+        <div className="actions row">
           <Button
             icon="pause"
             title={state.status === STATUSES.paused ? t("record") : t("pause")}
@@ -201,13 +202,11 @@ function App() {
             )}
           />
         </div>
-      </div>
 
-      <div className="row">
         <div className="download-container">
-          <Button
-            icon="download"
+          <DownloadButton
             title={t("download_mp4")}
+            progress={state.processProgress}
             onClick={() => onDownload("mp4")}
             disabled={!state.downloadReady || !state.processedVideoUrl}
           />
