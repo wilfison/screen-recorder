@@ -83,19 +83,27 @@ export default class ScreenRecorder implements IScreenRecorder {
   }
 
   async getAudioInputs(): Promise<deviceType[]> {
-    return navigator.mediaDevices.enumerateDevices().then((devices) => {
-      return devices
-        .filter((device) => device.kind === "audioinput")
-        .map((device) => ({ label: device.label, value: device.deviceId }));
-    });
+    const devices = await navigator.mediaDevices
+      ?.enumerateDevices()
+      .then((devices) => {
+        return devices
+          .filter((device) => device.kind === "audioinput")
+          .map((device) => ({ label: device.label, value: device.deviceId }));
+      });
+
+    return devices || [];
   }
 
   async getVideoInputs(): Promise<deviceType[]> {
-    return navigator.mediaDevices.enumerateDevices().then((devices) => {
-      return devices
-        .filter((device) => device.kind === "videoinput")
-        .map((device) => ({ label: device.label, value: device.deviceId }));
-    });
+    const devices = await navigator.mediaDevices
+      ?.enumerateDevices()
+      .then((devices) => {
+        return devices
+          .filter((device) => device.kind === "videoinput")
+          .map((device) => ({ label: device.label, value: device.deviceId }));
+      });
+
+    return devices || [];
   }
 
   setWebcamLocation() {
