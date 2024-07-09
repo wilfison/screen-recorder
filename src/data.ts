@@ -15,7 +15,7 @@ export const INITIAL_STATE: AppState = {
   downloadReady: false,
   processProgress: 0,
   processedVideoUrl: null,
-  includeAudio: true,
+  includeAudio: false,
   includeCamera: false,
   audioInputs: [],
   videoInputs: [],
